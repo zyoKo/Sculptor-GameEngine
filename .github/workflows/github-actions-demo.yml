@@ -1,0 +1,49 @@
+name: Build and Test on Linux
+
+on:
+  push:
+    branches:
+      - dev/githubCICD
+  pull_request:
+    branches:
+      - dev/githubCICD
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up the environment (if needed)
+      - name: Set up environment
+        run: sudo apt-get update && sudo apt-get install -y build-essential
+
+      # Step 3: Build Engine
+      - name: Build Engine
+        run: |
+          chmod +x ./engine/build.sh
+          ./engine/build.sh
+        working-directory: ./engine
+
+      # Step 4: Build Testbed
+      - name: Build Testbed
+        run: |
+          chmod +x ./testbed/build.sh
+          ./testbed/build.sh
+        working-directory: ./testbed
+
+      # Step 5: Build Everything
+      - name: Build Everything
+        run: |
+          chmod +x ./build-all.sh
+          ./build-all.sh
+        working-directory: .
+
+      # Step 6: Run Tests (optional)
+      - name: Run Tests
+        run: |
+          cd ./build  # Adjust this path based on your build output
+          ctest --output-on-failure
