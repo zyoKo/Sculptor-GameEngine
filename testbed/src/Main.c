@@ -13,5 +13,7 @@ int main(void)
 
     SASSERT_MSG(1 == 0, message);
 
+    SINFO("Check for GitHub Actions to Run!\n");
+
     return 0;
 }
